@@ -21,22 +21,15 @@ describe('api/uploads/BaseMultiput', () => {
             eventInfo     | expectedData
             ${null}       | ${{ event_type }}
             ${event_info} | ${{ event_type, event_info }}
-        `(
-            'should POST to the correct endpoint',
-            async ({ eventInfo, expectedData }) => {
-                BaseMultiputTest.sessionEndpoints.logEvent = 'logEvent';
-                BaseMultiputTest.xhr.post = jest
-                    .fn()
-                    .mockReturnValueOnce('expected');
+        `('should POST to the correct endpoint', async ({ eventInfo, expectedData }) => {
+            BaseMultiputTest.sessionEndpoints.logEvent = 'logEvent';
+            BaseMultiputTest.xhr.post = jest.fn().mockReturnValueOnce('expected');
 
-                expect(
-                    await BaseMultiputTest.logEvent(event_type, eventInfo),
-                ).toBe('expected');
-                expect(BaseMultiputTest.xhr.post).toHaveBeenCalledWith({
-                    url: 'logEvent',
-                    data: expectedData,
-                });
-            },
-        );
+            expect(await BaseMultiputTest.logEvent(event_type, eventInfo)).toBe('expected');
+            expect(BaseMultiputTest.xhr.post).toHaveBeenCalledWith({
+                url: 'logEvent',
+                data: expectedData,
+            });
+        });
     });
 });

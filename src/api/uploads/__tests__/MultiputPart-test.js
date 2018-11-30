@@ -188,26 +188,19 @@ describe('api/uploads/MultiputPart', () => {
             ${{ offset: 1, part_id: 1 }}
             ${{ offset: 1 }}
             ${{ offset: 2, part_id: 1 }}
-        `(
-            'should call upload when upload is not available on the server',
-            async ({ parts }) => {
-                MultiputPartTest.destroyed = false;
-                MultiputPartTest.uploadedBytes = 100;
-                MultiputPartTest.size = 100;
-                MultiputPartTest.numUploadRetriesPerformed = 0;
-                MultiputPartTest.upload = jest.fn();
-                MultiputPartTest.uploadSuccessHandler = jest.fn();
-                MultiputPartTest.listParts = jest
-                    .fn()
-                    .mockReturnValueOnce(Promise.resolve(parts));
+        `('should call upload when upload is not available on the server', async ({ parts }) => {
+            MultiputPartTest.destroyed = false;
+            MultiputPartTest.uploadedBytes = 100;
+            MultiputPartTest.size = 100;
+            MultiputPartTest.numUploadRetriesPerformed = 0;
+            MultiputPartTest.upload = jest.fn();
+            MultiputPartTest.uploadSuccessHandler = jest.fn();
+            MultiputPartTest.listParts = jest.fn().mockReturnValueOnce(Promise.resolve(parts));
 
-                await MultiputPartTest.retryUpload();
-                expect(MultiputPartTest.numUploadRetriesPerformed).toBe(1);
-                expect(
-                    MultiputPartTest.uploadSuccessHandler,
-                ).not.toHaveBeenCalled();
-            },
-        );
+            await MultiputPartTest.retryUpload();
+            expect(MultiputPartTest.numUploadRetriesPerformed).toBe(1);
+            expect(MultiputPartTest.uploadSuccessHandler).not.toHaveBeenCalled();
+        });
     });
 
     describe('cancel()', () => {

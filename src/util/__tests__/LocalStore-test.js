@@ -48,20 +48,13 @@ describe('util/LocalStore', () => {
             rawValue | expected
             ${value} | ${JSON.parse(value)}
             ${null}  | ${null}
-        `(
-            'should call getItem on localStorage properly when localStorage is available',
-            ({ rawValue, expected }) => {
-                localStore.isLocalStorageAvailable = true;
-                localStore.buildKey = jest.fn().mockReturnValueOnce(key);
-                localStore.localStorage.getItem = jest
-                    .fn()
-                    .mockReturnValueOnce(rawValue);
-                expect(localStore.getItem(key, value)).toEqual(expected);
-                expect(localStore.localStorage.getItem).toHaveBeenCalledWith(
-                    key,
-                );
-            },
-        );
+        `('should call getItem on localStorage properly when localStorage is available', ({ rawValue, expected }) => {
+            localStore.isLocalStorageAvailable = true;
+            localStore.buildKey = jest.fn().mockReturnValueOnce(key);
+            localStore.localStorage.getItem = jest.fn().mockReturnValueOnce(rawValue);
+            expect(localStore.getItem(key, value)).toEqual(expected);
+            expect(localStore.localStorage.getItem).toHaveBeenCalledWith(key);
+        });
 
         test('should set value from memory when localStorage is not available', () => {
             localStore.isLocalStorageAvailable = false;

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions, no-underscore-dangle */
 import * as func from '../../../util/function';
 import * as webcrypto from '../../../util/webcrypto';
 import * as uploadUtil from '../../../util/uploads';
@@ -138,19 +137,16 @@ describe('api/uploads/MultiputUpload', () => {
             ${false} | ${false} | ${2}              | ${1}
             ${true}  | ${false} | ${1}              | ${1}
             ${false} | ${false} | ${1}              | ${0}
-        `(
-            'should return correct value:',
-            ({ expected, ended, numPartsUploading, numPartsDigestReady }) => {
-                // Setup
-                multiputUploadTest.destroyed = ended;
-                multiputUploadTest.numPartsUploading = numPartsUploading;
-                multiputUploadTest.numPartsDigestReady = numPartsDigestReady;
-                // Execute
-                const result = multiputUploadTest.canStartMorePartUploads();
-                // Verify
-                expect(result).toBe(expected);
-            },
-        );
+        `('should return correct value:', ({ expected, ended, numPartsUploading, numPartsDigestReady }) => {
+            // Setup
+            multiputUploadTest.destroyed = ended;
+            multiputUploadTest.numPartsUploading = numPartsUploading;
+            multiputUploadTest.numPartsDigestReady = numPartsDigestReady;
+            // Execute
+            const result = multiputUploadTest.canStartMorePartUploads();
+            // Verify
+            expect(result).toBe(expected);
+        });
     });
 
     describe('updateFirstUnuploadedPartIndex()', () => {
@@ -190,21 +186,18 @@ describe('api/uploads/MultiputUpload', () => {
             ${0}
             ${1}
             ${2}
-        `(
-            'should update firstUnuploadedPartIndex correctly when some parts done',
-            ({ firstUnuploadedPart }) => {
-                // Setup
-                multiputUploadTest.parts[0].state = PART_STATE_UPLOADED;
-                multiputUploadTest.parts[1].state = PART_STATE_UPLOADED;
-                multiputUploadTest.parts[2].state = PART_STATE_COMPUTING_DIGEST;
-                multiputUploadTest.firstUnuploadedPartIndex = firstUnuploadedPart;
-                // Execute
-                multiputUploadTest.updateFirstUnuploadedPartIndex();
+        `('should update firstUnuploadedPartIndex correctly when some parts done', ({ firstUnuploadedPart }) => {
+            // Setup
+            multiputUploadTest.parts[0].state = PART_STATE_UPLOADED;
+            multiputUploadTest.parts[1].state = PART_STATE_UPLOADED;
+            multiputUploadTest.parts[2].state = PART_STATE_COMPUTING_DIGEST;
+            multiputUploadTest.firstUnuploadedPartIndex = firstUnuploadedPart;
+            // Execute
+            multiputUploadTest.updateFirstUnuploadedPartIndex();
 
-                // Verify
-                expect(multiputUploadTest.firstUnuploadedPartIndex).toBe(2);
-            },
-        );
+            // Verify
+            expect(multiputUploadTest.firstUnuploadedPartIndex).toBe(2);
+        });
 
         // Test cases in order
         // firstUnuploadedPartIndex is 0
@@ -215,22 +208,19 @@ describe('api/uploads/MultiputUpload', () => {
             ${0}
             ${1}
             ${2}
-        `(
-            'should update firstUnuploadedPartIndex correctly when some parts done',
-            ({ firstUnuploadedPart }) => {
-                // Setup
-                multiputUploadTest.parts[0].state = PART_STATE_UPLOADED;
-                multiputUploadTest.parts[1].state = PART_STATE_UPLOADED;
-                multiputUploadTest.parts[2].state = PART_STATE_UPLOADED;
-                multiputUploadTest.firstUnuploadedPartIndex = firstUnuploadedPart;
+        `('should update firstUnuploadedPartIndex correctly when some parts done', ({ firstUnuploadedPart }) => {
+            // Setup
+            multiputUploadTest.parts[0].state = PART_STATE_UPLOADED;
+            multiputUploadTest.parts[1].state = PART_STATE_UPLOADED;
+            multiputUploadTest.parts[2].state = PART_STATE_UPLOADED;
+            multiputUploadTest.firstUnuploadedPartIndex = firstUnuploadedPart;
 
-                // Execute
-                multiputUploadTest.updateFirstUnuploadedPartIndex();
+            // Execute
+            multiputUploadTest.updateFirstUnuploadedPartIndex();
 
-                // Verify
-                expect(multiputUploadTest.firstUnuploadedPartIndex).toBe(3);
-            },
-        );
+            // Verify
+            expect(multiputUploadTest.firstUnuploadedPartIndex).toBe(3);
+        });
     });
 
     describe('populateParts()', () => {
@@ -368,39 +358,24 @@ describe('api/uploads/MultiputUpload', () => {
             data
             ${{ code: 'storage_limit_exceeded', status: 403 }}
             ${{ code: 'access_denied_insufficient_permissions', status: 403 }}
-        `(
-            'should invoke errorCallback but not sessionErrorHandler on expected failure',
-            async ({ data }) => {
-                // Setup
-                const error = {
-                    response: {
-                        data,
-                    },
-                };
-
-                multiputUploadTest.errorCallback = jest.fn();
-                multiputUploadTest.getErrorResponse = jest
-                    .fn()
-                    .mockReturnValueOnce(data);
-                multiputUploadTest.createSessionErrorHandler = jest.fn();
-                multiputUploadTest.xhr.post = jest
-                    .fn()
-                    .mockReturnValueOnce(Promise.reject(error));
-                multiputUploadTest.getBaseUploadUrlFromPreflightResponse = jest
-                    .fn()
-                    .mockReturnValueOnce(uploadHost);
-
-                await multiputUploadTest.preflightSuccessHandler(
-                    preflightResponse,
-                );
-                expect(
-                    multiputUploadTest.createSessionErrorHandler,
-                ).not.toHaveBeenCalledWith();
-                expect(multiputUploadTest.errorCallback).toHaveBeenCalledWith(
+        `('should invoke errorCallback but not sessionErrorHandler on expected failure', async ({ data }) => {
+            // Setup
+            const error = {
+                response: {
                     data,
-                );
-            },
-        );
+                },
+            };
+
+            multiputUploadTest.errorCallback = jest.fn();
+            multiputUploadTest.getErrorResponse = jest.fn().mockReturnValueOnce(data);
+            multiputUploadTest.createSessionErrorHandler = jest.fn();
+            multiputUploadTest.xhr.post = jest.fn().mockReturnValueOnce(Promise.reject(error));
+            multiputUploadTest.getBaseUploadUrlFromPreflightResponse = jest.fn().mockReturnValueOnce(uploadHost);
+
+            await multiputUploadTest.preflightSuccessHandler(preflightResponse);
+            expect(multiputUploadTest.createSessionErrorHandler).not.toHaveBeenCalledWith();
+            expect(multiputUploadTest.errorCallback).toHaveBeenCalledWith(data);
+        });
 
         // Test cases in order
         // maybe response null
@@ -411,39 +386,26 @@ describe('api/uploads/MultiputUpload', () => {
             ${{ status: 403 }}
             ${{ status: 403, a: 1 }}
             ${{ status: '403', code: 'foo' }}
-        `(
-            'should invoke sessionErrorHandler on other non-201 status code',
-            async ({ data }) => {
-                const error = {
-                    response: {
-                        data,
-                    },
-                };
+        `('should invoke sessionErrorHandler on other non-201 status code', async ({ data }) => {
+            const error = {
+                response: {
+                    data,
+                },
+            };
 
-                multiputUploadTest.getErrorResponse = jest
-                    .fn()
-                    .mockReturnValueOnce(data);
-                multiputUploadTest.sessionErrorHandler = jest.fn();
-                multiputUploadTest.xhr.post = jest
-                    .fn()
-                    .mockReturnValueOnce(Promise.reject(error));
-                multiputUploadTest.getBaseUploadUrlFromPreflightResponse = jest
-                    .fn()
-                    .mockReturnValueOnce(uploadHost);
+            multiputUploadTest.getErrorResponse = jest.fn().mockReturnValueOnce(data);
+            multiputUploadTest.sessionErrorHandler = jest.fn();
+            multiputUploadTest.xhr.post = jest.fn().mockReturnValueOnce(Promise.reject(error));
+            multiputUploadTest.getBaseUploadUrlFromPreflightResponse = jest.fn().mockReturnValueOnce(uploadHost);
 
-                await multiputUploadTest.preflightSuccessHandler(
-                    preflightResponse,
-                );
+            await multiputUploadTest.preflightSuccessHandler(preflightResponse);
 
-                expect(
-                    multiputUploadTest.sessionErrorHandler,
-                ).toHaveBeenCalledWith(
-                    error,
-                    'create_session_misc_error',
-                    JSON.stringify(error),
-                );
-            },
-        );
+            expect(multiputUploadTest.sessionErrorHandler).toHaveBeenCalledWith(
+                error,
+                'create_session_misc_error',
+                JSON.stringify(error),
+            );
+        });
     });
 
     describe('createSessionErrorHandler()', () => {
@@ -586,13 +548,7 @@ describe('api/uploads/MultiputUpload', () => {
             ${true}  | ${false} | ${0}                    | ${1}               | ${1}
         `(
             'should return correct value',
-            ({
-                expected,
-                ended,
-                numPartsDigestComputing,
-                numPartsNotStarted,
-                numPartsDigestReady,
-            }) => {
+            ({ expected, ended, numPartsDigestComputing, numPartsNotStarted, numPartsDigestReady }) => {
                 // Setup
                 multiputUploadTest.ended = ended;
                 multiputUploadTest.numPartsDigestComputing = numPartsDigestComputing;

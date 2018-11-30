@@ -101,28 +101,21 @@ describe('components/ContentSidebar/ActivityFeed/approval-comment-form/ApprovalC
         commentText                           | expectedCallCount
         ${{ text: '', hasMention: false }}    | ${0}
         ${{ text: 'hey', hasMention: false }} | ${1}
-    `(
-        `should call createComment $expectedCallCount times`,
-        ({ commentText, expectedCallCount }) => {
-            const createCommentSpy = jest.fn();
+    `(`should call createComment $expectedCallCount times`, ({ commentText, expectedCallCount }) => {
+        const createCommentSpy = jest.fn();
 
-            const wrapper = render({ createComment: createCommentSpy });
-            const instance = wrapper.instance();
+        const wrapper = render({ createComment: createCommentSpy });
+        const instance = wrapper.instance();
 
-            instance.getFormattedCommentText = jest
-                .fn()
-                .mockReturnValue(commentText);
+        instance.getFormattedCommentText = jest.fn().mockReturnValue(commentText);
 
-            const submitBtn = wrapper.find(
-                'PrimaryButton.bcs-comment-input-submit-btn',
-            );
-            const formEl = wrapper.find('form').getDOMNode();
-            formEl.checkValidity = () => !!expectedCallCount;
-            submitBtn.simulate('submit', { target: formEl });
+        const submitBtn = wrapper.find('PrimaryButton.bcs-comment-input-submit-btn');
+        const formEl = wrapper.find('form').getDOMNode();
+        formEl.checkValidity = () => !!expectedCallCount;
+        submitBtn.simulate('submit', { target: formEl });
 
-            expect(createCommentSpy).toHaveBeenCalledTimes(expectedCallCount);
-        },
-    );
+        expect(createCommentSpy).toHaveBeenCalledTimes(expectedCallCount);
+    });
 
     test('should call createTask handler when approver has been added', () => {
         const createTaskSpy = jest.fn();

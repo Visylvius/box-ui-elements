@@ -54,9 +54,7 @@ describe('util/uploads', () => {
         `(
             'should return the properly formatted date when possible and return null otherwise',
             ({ file, expectedResult }) => {
-                expect(getFileLastModifiedAsISONoMSIfPossible(file)).toBe(
-                    expectedResult,
-                );
+                expect(getFileLastModifiedAsISONoMSIfPossible(file)).toBe(expectedResult);
             },
         );
     });
